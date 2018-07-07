@@ -5,7 +5,7 @@
     <groupId>com.hanlinkeji.edu</groupId>
     <artifactId>hanlin-pom</artifactId>
     <version>0.0.1</version>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
     <name>hanlin-pom</name>
     <url>http://maven.apache.org</url>
     <properties>
