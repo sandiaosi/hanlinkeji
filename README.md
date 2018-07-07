@@ -1,3 +1,2 @@
 # hanlinkeji
-this is our first project,we must do it better!
-11111
+This is our first project about education,we must do it better!
