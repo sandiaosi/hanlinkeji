@@ -1,7 +1,143 @@
-<!DOCTYPE web-app PUBLIC
-        "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
-        "http://java.sun.com/dtd/web-app_2_3.dtd" >
-
-<web-app>
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         id="hanlin-web" version="2.5">
     <display-name>hanlin-web</display-name>
+    <!-- 0. 环境搭建
+                  资料参考： https://blog.csdn.net/linpeng_1/article/details/70174642
+                  资料参考：https://blog.csdn.net/boonya/article/details/55006850
+    -->
+
+
+    <!-- 1. 加载Spring配置文件 -->
+    <!-- 说明：
+           启动Web容器时，需要自动装配的spring上下文信息, 此处为用户自己指定了配置文件地址
+           资料参考：http://www.jb51.net/article/84998.htm
+           资料参考：https://www.cnblogs.com/wuchaodzxx/p/6038895.html
+     -->
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath:configs/spring/spring-*.xml</param-value>
+        <!-- 			<param-value> -->
+        <!-- 				classpath:configs/spring/IbatisApplicationContext.xml   -->
+        <!-- 				classpath:configs/spring/ServiceApplicationContext.xml   -->
+        <!-- 			</param-value> -->
+    </context-param>
+
+    <!-- 2. Spring监听 -->
+    <!-- 说明：
+         ContextLoaderListener的作用就是启动Web容器时，自动装配ApplicationContext.xml的配置信息。
+                   因为它实现了ServletContextListener这个接口，在web.xml配置这个监听器，启动容器时，就会默认执行它实现的方法。
+         ApplicationContext.xml这个配置文件部一般默认放置在。applicationContext的默认的路径是”/WEB-INF/applicationContext.xml。
+                          也可以在web.xml中配置该文件的其他位置,配置如下：
+        <context-param>
+                <param-name>contextConfigLocation</param-name>
+                <param-value>
+                    classpath:applicationContext.xml
+                    classpath:applicationContext-security.xml;
+                </param-value>
+        </context-param>
+     -->
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+
+
+    <!-- 3. 字符集过滤器： 通常搭建web项目工程时都需要设置字符集 -->
+    <!-- 说明：
+         1. 字符集过滤器的配置基本都是千篇一律和大同小异没有什么特别的区别可以去
+    -->
+    <filter>
+        <filter-name>CharacterEncodingFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>utf-8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>forceEncoding</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>CharacterEncodingFilter</filter-name>
+        <url-pattern>*.htm</url-pattern>
+        <url-pattern>*.action</url-pattern>
+    </filter-mapping>
+
+
+    <!-- 3. Spring MVC配置 -->
+    <!-- 说明：
+                   参考资料：https://blog.csdn.net/xixiaoming_A/article/details/51146150
+                   参考资料：http://jinnianshilongnian.iteye.com/blog/1602617
+         1. spring中此核心类的继承关系：HttpServlet < HttpServletBean < FrameworkServlet < DispatcherServlet
+            A. HttpServletBean是Spring对HttpServlet最底层的抽象，在这里Spring把Servlet视作一个Bean
+            B. FrameworkServlet是对HttpServletBean的进一步抽象，真正初始化一个Spring的容器（WebApplicationContext）
+            C. DispatcherServlet对容器（容器用于管理组件）进行初始化以达到对组件进行逻辑调用的目的
+
+         2. DispatcherServlet是程序的入口，在web.xml中配置
+            A. 在Servlet模式中，web.xml配置项目的所有请求-响应映射关系。项目规模扩大之后，请求-响应的映射关系全部定义在web.xml中，将造成web.xml的不断膨胀而变得难以维护。
+            B. 针对这一点，SpringMVC提炼一个核心的Servlet覆盖对所有Http请求的处理，也就是DispatcherServlet。
+
+         3. 核心分发器需要做到：
+            A. 能够根据一定的规则对不同的Http请求分发到不同的Servlet对象上去进行处理
+            B. 能够建立起一整套完整的对所有Http请求进行规范化处理的流程（不同协议之间的转化，从Http协议到Java）。
+
+         4. 为了做到这2点，SpringMVC所提出2点：
+            A. 处理流程规范化 —— 将处理流程划分为若干个步骤（任务），并使用一条明确的逻辑主线将所有的步骤串联起来
+            B. 处理流程组件化 —— 将处理流程中的每一个步骤（任务）都定义为接口，并为每个接口赋予不同的实现模式
+
+         5. 流程步骤为：
+            A. 对Http请求进行初步处理，查找与之对应的Controller处理类（方法）—— HandlerMapping接口（组件）
+            B. 调用相应的Controller处理类（方法）完成业务逻辑                                    —— HandlerAdapter接口（组件）
+            C. 对Controller处理类（方法）调用时可能发生的异常进行处理                    —— HandlerExceptionResolver接口（组件）
+            D. 根据Controller处理类（方法）的调用结果，进行Http响应处理            —— ViewResolver接口（组件）
+
+                                    总结：这4个步骤对应的4个接口就是Spring的组件，而DispatcherServlet就是把这些组件串联在一起，实现分发请求的功能。
+                                    那么SpringMVC要怎么管理这些组件呢？我们必须借助一个有效的手段对整个SpringMVC的组件进行定义，而这一点正是通过核心配置文件来完成的。
+                                    组件是处理流程的抽象化，因而所有组件都是接口，接口最重要意义是定义操作规范，一个接口可以有多个不同的实现类，代表的是对于相同的逻辑语义的不同解读方式。
+                                    或者说一个接口的每一个不同的实现分支，代表了相同操作规范的不同行为模式。
+                                    举个例子，根据Http请求查找与之对应的Controller的组件HandlerMapping的树形实现体系：
+            a. BeanNameUrlHandlerMapping       —— 根据Spring容器中的bean的定义来指定请求映射关系
+            b. SimpleUrlHandlerMapping         —— 直接指定URL与Controller的映射关系，其中的URL支持Ant风格
+            c. DefaultAnnotationHandlerMapping —— 支持通过直接扫描Controller类中的Annotation来确定请求映射关系
+            d. RequestMappingHandlerMapping    —— 通过扫描Controller类中的Annotation来确定请求映射关系的另外一个实现类
+                                     由此可以看出，组件化（接口化）体系是SpringNVC对行为模式的扩展的有效途径，SpringMVC是一个基于组件的开发框架
+     -->
+
+
+    <servlet>
+        <servlet-name>Dispatcher</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <!-- 自定义spring mvc的配置文件名称和路径 -->
+        <!-- 在Java Resources/scr/main/resources目录下，创建configs文件夹，以便存放在web.xml中声明的配置路径 -->
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:configs/spring/spring-servlet.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <!-- spring mvc 请求后缀 -->
+    <!--说明：
+                通过<servlet-name>来关联和配置分发规则, 举例说明：
+        <servlet-mapping>
+            <servlet-name>Dispatcher</servlet-name>
+            <url-pattern>/</url-pattern>
+        </servlet-mapping>
+     -->
+    <servlet-mapping>
+        <servlet-name>Dispatcher</servlet-name>
+        <url-pattern>*.htm</url-pattern>
+        <url-pattern>*.action</url-pattern>
+    </servlet-mapping>
+
+    <!-- web欢迎页、首页 -->
+    <!-- 说明：
+         在web项目中，当用户在浏览器中输入的URL不包含某个特定的Servlet、html、jsp页面时，web.xml中<welcome-file-list>标签元素就会指定显示的默认文件。
+     -->
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
 </web-app>
