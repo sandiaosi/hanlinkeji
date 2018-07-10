@@ -125,10 +125,24 @@
                 <value>/WEB-INF/freemarker/</value>
             </list>
         </property>
-        <property name="configLocation">
-            <value>classpath:freemarker.properties</value>
-        </property>
+        <property name="configLocation" value="classpath:freemarker.properties"/>
         <property name="defaultEncoding" value="utf-8"/>
+        <property name="freemarkerVariables">
+            <map>
+                <entry key="xml_escape" value-ref="fmXmlEscape" />
+                <!--下面四个是在下面定义的-->
+                <entry key="extends" value-ref="extendsDirective"/>
+                <entry key="override" value-ref="overrideDirective"/>
+                <entry key="block" value-ref="blockDirective"/>
+                <entry key="super" value-ref="superDirective"/>
+            </map>
+        </property>
     </bean>
+    <bean id="fmXmlEscape" class="freemarker.template.utility.XmlEscape" />
+    <!-- freemaker  Directive-->
+    <bean id="blockDirective" class="cn.org.rapid_framework.freemarker.directive.BlockDirective"/>
+    <bean id="extendsDirective" class="cn.org.rapid_framework.freemarker.directive.ExtendsDirective"/>
+    <bean id="overrideDirective" class="cn.org.rapid_framework.freemarker.directive.OverrideDirective"/>
+    <bean id="superDirective" class="cn.org.rapid_framework.freemarker.directive.SuperDirective"/>
 
 </beans>
