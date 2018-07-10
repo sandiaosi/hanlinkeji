@@ -10,10 +10,14 @@
  */
 package com.hanlinkeji.edu.controller.admin;
 
+import com.hanlinkeji.edu.comm.RequestUtils;
+import com.hanlinkeji.edu.service.admin.AdminService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
  *
@@ -23,9 +27,21 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Controller
 @RequestMapping("backHomeManage")
-public class adminController {
+public class AdminController {
+    @Autowired
+    private AdminService adminService;
+
     @RequestMapping("toHome.action")
     private  String toAdminHome(HttpServletRequest request){
         return "/home";
     }
+    @RequestMapping("testPage.action")
+    private  String testPage(HttpServletRequest request){
+        Map<String, Object> paramter = RequestUtils.getRequestParamMap(request);
+        paramter.put("pageSize","3");
+        request.setAttribute("pageInfo",adminService.testPage(paramter));
+        return "/testPage";
+    }
+
+
 }
