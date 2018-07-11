@@ -12,6 +12,5 @@ public class App
     }
     
     public static void test(){
-    	System.out.println("test update");
     }
 }
