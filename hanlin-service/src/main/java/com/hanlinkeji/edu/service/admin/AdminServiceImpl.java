@@ -1,0 +1,35 @@
+/**
+ * Copyright (C), 2018-2018, 北斗翰林
+ * FileName: AdminServiceImpl
+ * Author:   xuguojun
+ * Date:     2018/7/10 下午9:37
+ * Description: //描述
+ * History: //历史记录
+ * <author>             <time>            <version>             <desc>
+ * 修改人姓名             修改时间            版本号                  描述
+ */
+package com.hanlinkeji.edu.service.admin;
+
+import com.github.pagehelper.PageInfo;
+import com.hanlinkeji.edu.comm.BaseMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.Map;
+
+/**
+ *
+ * 〈功能详细描述〉
+ *
+ * @author xuguojun
+ */
+@Service
+public class AdminServiceImpl implements AdminService {
+    @Autowired
+    private BaseMapper baseMapper;
+
+    @Override
+    public PageInfo<Map<String, Object>> testPage(Map<String, Object> paramter) {
+        return baseMapper.selectPage("adminDao.selectUserByMap",paramter);
+    }
+}

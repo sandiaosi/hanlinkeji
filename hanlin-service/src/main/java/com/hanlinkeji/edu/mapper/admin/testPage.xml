@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="adminDao">
+    <select id="selectUserByMap" parameterType="map" resultType="map">
+        select id "id",CONTEXT "context", USER_NAME "userName",USER_AGE "userAge" from test_page_table
+    </select>
+</mapper>
+
