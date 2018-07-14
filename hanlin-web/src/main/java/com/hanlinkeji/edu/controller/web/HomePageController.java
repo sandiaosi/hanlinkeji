@@ -9,7 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.hanlinkeji.edu.comm.RequestUtils;
-import com.hanlinkeji.edu.service.admin.AdminService;
 import com.hanlinkeji.edu.service.web.HomePageService;
 
 /**

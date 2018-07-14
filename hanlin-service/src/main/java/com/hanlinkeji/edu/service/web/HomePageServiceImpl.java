@@ -21,6 +21,6 @@ public class HomePageServiceImpl implements HomePageService{
 
     @Override
     public PageInfo<Map<String, Object>> testPage(Map<String, Object> paramter) {
-        return baseMapper.selectPage("adminDao.selectUserByMap",paramter);
+        return baseMapper.selectPage("webDao.selectUserByMap",paramter);
     }
 }
