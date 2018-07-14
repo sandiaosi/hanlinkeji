@@ -47,7 +47,35 @@
                           这是Spring MVC为@Controller分发请求所必需的，并且提供了数据绑定支持，
          @NumberFormatannotation支持， @DateTimeFormat支持,@Valid支持读写XML的支持（JAXB）和读写JSON的支持（默认Jackson）等功能。
     -->
-    <mvc:annotation-driven/>
+    <mvc:annotation-driven>
+        <mvc:message-converters register-defaults="true">
+
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                <property name="supportedMediaTypes" value="text/plain;charset=UTF-8"/>
+            </bean>
+
+            <bean class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+                <property name="supportedMediaTypes">
+                    <list>
+                        <value>text/html;charset=UTF-8</value>
+                        <value>application/json</value>
+                    </list>
+                </property>
+                <property name="features">
+                    <list>
+                        <!-- 默认的意思就是不配置这个属性，配置了就不是默认了 -->
+                        <!-- 是否输出值为null的字段 ，默认是false-->
+                        <value>WriteMapNullValue</value>
+                        <value>WriteNullNumberAsZero</value>
+                        <value>WriteNullListAsEmpty</value>
+                        <value>WriteNullStringAsEmpty</value>
+                        <value>WriteNullBooleanAsFalse</value>
+                        <value>WriteDateUseDateFormat</value>
+                    </list>
+                </property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
 
 
     <!-- 4. 配置静态资源  可选 -->
@@ -57,7 +85,6 @@
          3. 该配置的作用是：DispatcherServlet不会拦截以/xxx 开头的所有请求路径，并当作静态资源交由Servlet处理
     -->
     <mvc:resources mapping="/webstatic/**" location="/webstatic/"/>
-
 
 
     <!-- 5. 加载资源文件 -->
@@ -129,7 +156,7 @@
         <property name="defaultEncoding" value="utf-8"/>
         <property name="freemarkerVariables">
             <map>
-                <entry key="xml_escape" value-ref="fmXmlEscape" />
+                <entry key="xml_escape" value-ref="fmXmlEscape"/>
                 <!--下面四个是在下面定义的-->
                 <entry key="extends" value-ref="extendsDirective"/>
                 <entry key="override" value-ref="overrideDirective"/>
@@ -138,7 +165,7 @@
             </map>
         </property>
     </bean>
-    <bean id="fmXmlEscape" class="freemarker.template.utility.XmlEscape" />
+    <bean id="fmXmlEscape" class="freemarker.template.utility.XmlEscape"/>
     <!-- freemaker  Directive-->
     <bean id="blockDirective" class="cn.org.rapid_framework.freemarker.directive.BlockDirective"/>
     <bean id="extendsDirective" class="cn.org.rapid_framework.freemarker.directive.ExtendsDirective"/>

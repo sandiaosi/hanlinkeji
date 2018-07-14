@@ -27,13 +27,24 @@ public class RequestUtils {
         Map<String,Object> map = new HashMap<>();
         //得到枚举类型的参数名称，参数名称若有重复的只能得到第一个
         Enumeration enums = request.getParameterNames();
+        int iDisplayStart=0;
+        int iDisplayLength=10;
         while (enums.hasMoreElements())
         {
             String paramName = (String) enums.nextElement();
             String paramValue = request.getParameter(paramName);
+            if("iDisplayStart".equals(paramName)){
+                iDisplayStart=Integer.valueOf(paramValue);
+            }
+            if("iDisplayLength".equals(paramName)){
+                iDisplayLength=Integer.valueOf(paramValue);
+            }
+
             //形成键值对应的map
             map.put(paramName, paramValue);
         }
+        map.put("pageNum", iDisplayStart / iDisplayLength + 1);
+        map.put("pageSize", iDisplayLength);
         return map;
     }
 
