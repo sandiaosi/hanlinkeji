@@ -325,5 +325,6 @@
         <module>../hanlin-web</module>
         <module>../hanlin-intf</module>
         <module>../hanlin-common</module>
+        <module>../hanlin-admin</module>
     </modules>
 </project>

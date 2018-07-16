@@ -1,0 +1,12 @@
+.pageContainer{
+    margin-top: 10px;
+}
+.pageContainer .dataTables_length,.dataTables_info{
+    float: left;
+}
+.pageContainer .dataTables_paginate{
+    float: right;
+}
+.pageContainer .pagination{
+    margin-right: 0px;
+}
