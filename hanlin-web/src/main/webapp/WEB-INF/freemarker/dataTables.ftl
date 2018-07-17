@@ -1257,7 +1257,7 @@
                         "sDom":'t<"pageContainer"lip>',
                         "aLengthMenu": [5, 10, 20], //更改显示记录数选项
                         "iDisplayLength": 5,
-                        "sAjaxSource": "${base}/backHomeManage/getData2.action",
+                        "sAjaxSource": "${base}/backHomeManage/getData3.action",
                         "aoColumns": [
                             {
                                 "bSortable": false,

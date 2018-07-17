@@ -30,6 +30,7 @@
     <!--[if lte IE 9]>
     <link rel="stylesheet" href="${base}/webstatic/assets/css/ace-ie.min.css"/>
     <![endif]-->
+    <link rel="stylesheet" href="${base}/webstatic/css/page_style.css"/>
     <!-- inline styles related to this page -->
     <@block name="csstext"></@block>
     <!-- ace settings handler -->
