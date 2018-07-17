@@ -126,6 +126,11 @@ public class BaseMapper {
         return sqlsession.insert(sqlStatement, parameter);
     }
 
+    public int insert4PrimaryKey(String sqlStatement, Object parameter, String primaryKeyId) {
+        this.insert(sqlStatement,parameter);
+        return MapUtils.getInteger((Map<? super String, ?>) parameter, primaryKeyId);
+    }
+
     public int update(String sqlStatement) {
         return sqlsession.update(sqlStatement);
     }
