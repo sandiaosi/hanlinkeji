@@ -10,22 +10,6 @@
             "sDom": '<""r>t<"pageContainer"lip>',
             "aLengthMenu": [5, 10, 20], //更改显示记录数选项
             "iDisplayLength": 5,
-            "sAjaxSource": "${base}/backHomeManage/getData2.action",
-            "aoColumns": [
-                {
-                    "bSortable": false,
-                    "sClass": "center",
-                    "sDefaultContent": "",
-                    render: function (data, type, row, meta) {
-                        var volText = '<label class="pos-rel"><input type="checkbox" class="ace" value="' + row.userName + '"><span class="lbl"></span></label>';
-                        return volText;
-                    }
-                },
-                {"bSortable": false, "sClass": "center", "mData": "userName", "sDefaultContent": ""},
-                {"bSortable": false, "sClass": "center", "mData": "userAge", "sDefaultContent": ""},
-                {"bSortable": false, "sClass": "center", "mData": "userAge", "sDefaultContent": ""}
-            ],
-
             //服务器端，数据回调处理
             "fnServerData": function (sSource, aDataSet, fnCallback) {
                 $.ajax({
