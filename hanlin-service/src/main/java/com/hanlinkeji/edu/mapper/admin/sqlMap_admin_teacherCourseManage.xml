@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="teacherCourseManage">
+    <!--查询一级目录-->
+    <select id="selectCourseClassifyInfo" parameterType="map" resultType="map">
+        SELECT
+	    a.classify_id,
+	    a.classify_name,
+	    a.is_bottom,
+	    a.parent_id
+        FROM
+	    hanlin_t_classifyinfo a
+        WHERE
+	    a.classify_type = '00'
+        AND a.status = '1'
+        ORDER BY a.grade ASC,a.sort ASC
+    </select>
+
+    <!--查询下级目录-->
+    <select id="selectNextClassifyInfo" parameterType="map" resultType="map">
+        SELECT
+        a.classify_id,
+        a.classify_name,
+        a.is_bottom,
+        a.parent_id
+        FROM
+        hanlin_t_classifyinfo a
+        WHERE
+        a.classify_type = '00'
+        AND a.status = '1'
+        <if test="parent_id !='' and parent_id != null">
+            a.parent_id=#{parent_id}
+        </if>
+        ORDER BY a.sort ASC,a.update_time DESC
+    </select>
+
+    <!--添加目录信息-->
+    <insert id="insertClassifyInfo" parameterType="map" useGeneratedKeys="true" keyProperty="classify_id" keyColumn="classify_id">
+        INSERT INTO
+        hanlin_t_classifyinfo
+        (
+        classify_name,
+        sort,
+        grade,
+        status,
+        is_bottom,
+        parent_id,
+        operate_id,
+        classify_type,
+        create_time,
+        update_time
+        )
+        VALUES
+        (
+        #{classify_name},
+        #{sort},
+        #{grade},
+        '1',
+        #{is_bottom},
+        #{parent_id},
+        '111111',
+        '00',
+        now(),
+        now()
+        )
+    </insert>
+
+    <!--更新目录信息-->
+    <update id="updateClassifyInfo">
+        UPDATE hanlin_t_classifyinfo
+        SET
+          classify_name=#{classify_name},
+          parent_id=#{parent_id},
+          sort=#{sort},
+          update_time=now()
+        WHERE
+          classify_id=#{classify_id}
+    </update>
+
+    <!--获取子集目录数量-->
+    <select id="queryChildenClassifyCount">
+        SELECT
+          count(1) as "count"
+        FROM
+          hanlin_t_classifyinfo
+        WHERE
+          parent_id=#{classify_id}
+    </select>
+
+    <!--删除目录信息-->
+    <delete id="deleteClassifyInfo">
+        DELETE FROM hanlin_t_classifyinfo WHERE classify_id=#{classify_id}
+    </delete>
+
+    <!--删除课程目录关系-->
+    <delete id="deleteClassifyCourseRela">
+        DELETE FROM hanlin_t_courserela WHERE course_id=#{course_id}
+    </delete>
+
+    <!--删除课程信息-->
+    <delete id="deleteCourseInfo">
+        DELETE FROM hanlin_t_classifyinfo WHEN course_id=#{course_id}
+    </delete>
+
+    <!--查询课程信息-->
+    <select id="selectTeacherCoursePage">
+        SELECT
+          a.course_id,
+          b.subject,
+          b.course_type,
+          b.course_title,
+          b.status,
+          b.user_id,
+          b.course_desc,
+          b.outline_url,
+          b.thumbnail_url,
+          b.is_pay,
+          b.fee_scale,
+          b.create_time,
+          b.update_time
+        FROM
+          hanlin_t_courserela a,
+          hanlin_t_course b
+        WHERE
+          a.course_id=b.course_id
+          and a.classify_id=#{classify_id}
+    </select>
+
+    <!--添加课程-->
+    <insert id="insertTeacherCourseInfo">
+        INSERT INTO
+        hanlin_t_course
+        (
+        subject,
+        course_type,
+        course_title,
+        status,
+        user_id,
+        course_desc,
+        outline_url,
+        thumbnail_url,
+        is_pay,
+        fee_scale,
+        is_perfect,
+        create_time,
+        update_time
+        )
+        VALUES
+        (
+        #{subject},
+        '0',
+        #{course_title},
+        #{status},
+        #{user_id},
+        #{course_desc},
+        #{outline_url},
+        #{thumbnail_url},
+        #{is_pay},
+        #{fee_scale},
+        '0',
+        now(),
+        now()
+        )
+    </insert>
+
+    <!--添加课程教师目录关系-->
+    <insert id="insertTeacherCourseRela">
+        INSERT INTO hanlin_t_courserela
+        (
+        classify_id,
+        course_id,
+        create_time,
+        update_time
+        )
+        VALUES
+        (
+        #{classify_id},
+        #{course_id},
+        now(),
+        now()
+        )
+    </insert>
+
+    <!--修改课程信息-->
+    <update id="updateTeacherCourseInfo">
+        UPDATE hanlin_t_course
+        SET
+        subject=#{subject},
+        course_title=#{course_title},
+        course_desc=#{course_desc},
+        outline_url=#{outline_url},
+        thumbnail_url=#{thumbnail_url},
+        is_pay=#{is_pay},
+        fee_scale=#{fee_scale},
+        update_time=now()
+        WHERE
+        course_id=#{course_id}
+    </update>
+
+    <!--更新课程状态-->
+    <update id="updateCourseStatus">
+        UPDATE hanlin_t_course
+        SET
+        status=#{status},
+        update_time=now()
+        WHERE
+        course_id=#{course_id}
+    </update>
+</mapper>
+
