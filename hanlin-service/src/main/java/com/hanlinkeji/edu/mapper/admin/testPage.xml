@@ -4,7 +4,13 @@
 
 <mapper namespace="adminDao">
     <select id="selectUserByMap" parameterType="map" resultType="map">
-        select id "id",CONTEXT "context", USER_NAME "userName",USER_AGE "userAge" from test_page_table
+        select id "id",CONTEXT "context", USER_NAME "userName",USER_AGE "userAge" from test_page_table where 1=1
+        <if test="userName != null and userName !=''">
+            AND USER_NAME like #{userName}
+        </if>
+        <if test="userAge != null and userAge!=''">
+            AND USER_AGE = #{userAge}
+        </if>
     </select>
 </mapper>
 

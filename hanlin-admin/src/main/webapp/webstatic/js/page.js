@@ -4,25 +4,11 @@
             "bAutoWidth": false,
             "bProcessing": true,
             "bServerSide": true,
-            "bStateSave": true,
-            "bFilter": false, //是否启动过滤、搜索功能
-            "bSort": false, //是否启动各个字段的排序功能
-            "sDom": '<""r>t<"pageContainer"lip>',
-            "aLengthMenu": [5, 10, 20], //更改显示记录数选项
-            "iDisplayLength": 5,
-            //服务器端，数据回调处理
-            "fnServerData": function (sSource, aDataSet, fnCallback) {
-                $.ajax({
-                    "dataType": 'json',
-                    "type": "POST",
-                    "url": sSource,
-                    "data": aDataSet,
-                    "success": fnCallback
-                });
-            },
-            select: {
-                style: 'multi'
-            },
+            "sDom": 'rt<"row pageContainer"lip>',
+            "aLengthMenu": [10, 20,40], //更改显示记录数选项
+            "iDisplayLength":10,
+            "aaSorting": [],
+            "bSort": false,
             "oLanguage": { //国际化配置
                 "sProcessing": "正在获取数据，请稍后...",
                 "sLengthMenu": "每页 _MENU_ 条",
@@ -39,6 +25,9 @@
                     "sNext": "下一页",
                     "sLast": "最后一页"
                 }
+            },
+            "select": {
+                "style": 'multi'
             }
         };
         var opts = $.extend({}, defaults, options);
