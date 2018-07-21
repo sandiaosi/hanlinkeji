@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="adminManageDao">
+    <select id="queryCoursePage" parameterType="map" resultType="map">
+		SELECT 
+			course_id      as    "courseId",
+			subject        as    "subject",
+			course_type    as    "courseType",
+			course_title   as    "courseTitle",
+			status         as    "status",
+			user_id        as    "userId",
+			course_desc    as    "courseDesc",
+			outline_url    as    "outlineUrl",
+			thumbnail_url  as    "thumbnailUrl",
+			is_pay         as    "isPay",
+			fee_scale      as    "feeScale",
+			is_perfect     as    "isPerfect",
+			notes          as    "notes",
+			create_time    as    "createTime",
+			update_time    as    "updateTime"
+		FROM
+			hanlin_t_course
+    </select>
+</mapper>
+
